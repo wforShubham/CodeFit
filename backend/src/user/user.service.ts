@@ -220,5 +220,25 @@ export class UserService {
       role: p.candidateId === userId ? 'candidate' : 'interviewer',
     }));
   }
+
+  async completeOnboarding(userId: string, role: 'JOB_SEEKER' | 'INTERVIEWER') {
+    return this.prisma.user.update({
+      where: { id: userId },
+      data: {
+        role,
+        onboardingCompleted: true,
+      },
+      select: {
+        id: true,
+        email: true,
+        firstName: true,
+        lastName: true,
+        role: true,
+        onboardingCompleted: true,
+        organizationId: true,
+        createdAt: true,
+      },
+    });
+  }
 }
 

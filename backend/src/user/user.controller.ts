@@ -65,5 +65,13 @@ export class UserController {
 
     return this.userService.updateUserProfile(id, data);
   }
+
+  @Patch('onboarding')
+  async completeOnboarding(
+    @Body() data: { role: 'JOB_SEEKER' | 'INTERVIEWER' },
+    @Request() req,
+  ) {
+    return this.userService.completeOnboarding(req.user.id, data.role);
+  }
 }
 

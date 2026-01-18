@@ -31,15 +31,22 @@ enum InterviewStatus {
 model User {
   id            String    @id @default(uuid())
   email         String    @unique
-  password      String
+  password      String?   // Optional for OAuth users
   firstName     String
   lastName      String
   role          UserRole  @default(JOB_SEEKER)
   organizationId String?
   organization  Organization? @relation(fields: [organizationId], references: [id])
+  
+  // OAuth fields
+  provider      String?   @default("LOCAL") // LOCAL, GOOGLE, GITHUB
+  providerId    String?   // OAuth provider's user ID
+  avatarUrl     String?   // Profile picture from OAuth provider
+  
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   isVerified    Boolean   @default(false)
+  onboardingCompleted Boolean @default(false)
 
   // Relations
   verificationToken VerificationToken?

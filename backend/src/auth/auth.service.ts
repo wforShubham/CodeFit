@@ -18,7 +18,7 @@ export class AuthService {
   ) { }
 
   async register(registerDto: RegisterDto) {
-    const { email, password, firstName, lastName, role, organizationId } = registerDto;
+    const { email, password, firstName, lastName, organizationId } = registerDto;
 
     // Check if user exists
     const existingUser = await this.prisma.user.findUnique({
@@ -32,16 +32,17 @@ export class AuthService {
     // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Create user with isVerified = false
+    // Create user - role will be set during onboarding
     const user = await this.prisma.user.create({
       data: {
         email,
         password: hashedPassword,
         firstName,
         lastName,
-        role,
         organizationId: organizationId || null,
+        provider: 'LOCAL',
         isVerified: false,
+        onboardingCompleted: false,
       },
     });
 
@@ -77,6 +78,11 @@ export class AuthService {
 
     if (!user) {
       throw new UnauthorizedException('Invalid credentials');
+    }
+
+    // Check if user has a password (OAuth users don't)
+    if (!user.password) {
+      throw new UnauthorizedException('Please login with Google');
     }
 
     // Verify password
@@ -190,5 +196,61 @@ export class AuthService {
     return this.prisma.user.findUnique({
       where: { id: userId },
     });
+  }
+
+  async validateOAuthLogin(profile: any) {
+    const { email, firstName, lastName, providerId, provider, avatarUrl } = profile;
+
+    // Check if user exists by email
+    let user = await this.prisma.user.findUnique({
+      where: { email },
+    });
+
+    if (user) {
+      // User exists - update OAuth info if needed
+      if (!user.providerId || user.provider !== provider) {
+        user = await this.prisma.user.update({
+          where: { id: user.id },
+          data: {
+            provider,
+            providerId,
+            avatarUrl,
+            isVerified: true, // OAuth users are auto-verified
+          },
+        });
+      }
+    } else {
+      // Create new user with OAuth - role will be set during onboarding
+      user = await this.prisma.user.create({
+        data: {
+          email,
+          firstName,
+          lastName,
+          provider,
+          providerId,
+          avatarUrl,
+          isVerified: true, // OAuth users are auto-verified
+          onboardingCompleted: false,
+        },
+      });
+    }
+
+    // Generate tokens
+    const tokens = await this.generateTokens(user.id, user.email, user.role);
+
+    return {
+      user: {
+        id: user.id,
+        email: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        role: user.role,
+        organizationId: user.organizationId,
+        isVerified: user.isVerified,
+        avatarUrl: user.avatarUrl,
+        onboardingCompleted: user.onboardingCompleted,
+      },
+      ...tokens,
+    };
   }
 }
