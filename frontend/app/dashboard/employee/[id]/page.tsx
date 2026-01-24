@@ -54,7 +54,6 @@ export default function EmployeeDetailPage() {
     const [editForm, setEditForm] = useState({
         firstName: '',
         lastName: '',
-        email: '',
     })
 
     // Initial data load - only runs once when userId changes
@@ -92,7 +91,6 @@ export default function EmployeeDetailPage() {
             setEditForm({
                 firstName: userRes.data.firstName,
                 lastName: userRes.data.lastName,
-                email: userRes.data.email,
             })
 
             // Fetch statistics
@@ -213,11 +211,11 @@ export default function EmployeeDetailPage() {
                                             </div>
                                         </div>
                                         <div>
-                                            <Label>Email</Label>
+                                            <Label>Email (Read-only)</Label>
                                             <Input
-                                                value={editForm.email}
-                                                onChange={(e) => setEditForm({ ...editForm, email: e.target.value })}
-                                                className="mt-1"
+                                                value={user.email}
+                                                disabled
+                                                className="mt-1 bg-slate-800/50 cursor-not-allowed"
                                             />
                                         </div>
                                         <div className="flex gap-2">
