@@ -110,6 +110,7 @@ export class AuthService {
         role: user.role,
         organizationId: user.organizationId,
         isVerified: user.isVerified,
+        onboardingCompleted: user.onboardingCompleted,
       },
       ...tokens,
     };
