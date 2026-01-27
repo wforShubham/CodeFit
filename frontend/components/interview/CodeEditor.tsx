@@ -12,15 +12,20 @@ interface CodeEditorProps {
   socket: any
 }
 
-// Language mapping for Judge0
+// Language mapping for Judge0 with comment syntax
 const LANGUAGES = [
-  { id: 63, name: 'JavaScript', monaco: 'javascript' },
-  { id: 71, name: 'Python', monaco: 'python' },
-  { id: 62, name: 'Java', monaco: 'java' },
-  { id: 54, name: 'C++', monaco: 'cpp' },
-  { id: 50, name: 'C', monaco: 'c' },
-  { id: 74, name: 'TypeScript', monaco: 'typescript' },
+  { id: 63, name: 'JavaScript', monaco: 'javascript', comment: '//' },
+  { id: 71, name: 'Python', monaco: 'python', comment: '#' },
+  { id: 62, name: 'Java', monaco: 'java', comment: '//' },
+  { id: 54, name: 'C++', monaco: 'cpp', comment: '//' },
+  { id: 50, name: 'C', monaco: 'c', comment: '//' },
+  { id: 74, name: 'TypeScript', monaco: 'typescript', comment: '//' },
 ]
+
+// Generate initial code template based on language
+const getInitialCode = (lang: typeof LANGUAGES[0]) => {
+  return `${lang.comment} Start coding here...\n`
+}
 
 export default function CodeEditor({ interviewId, socket }: CodeEditorProps) {
   const user = useAuthStore((state) => state.user)
@@ -51,6 +56,7 @@ export default function CodeEditor({ interviewId, socket }: CodeEditorProps) {
 
     socket.off('code:change')
     socket.off('code:cursor')
+    socket.off('code:language-change')
 
     socket.on('code:change', (data: any) => {
       console.log('CodeEditor: Received code:change:', data, 'current user:', user.id)
@@ -95,6 +101,36 @@ export default function CodeEditor({ interviewId, socket }: CodeEditorProps) {
       }
     })
 
+    // Listen for language changes from other participants
+    socket.on('code:language-change', (data: { language: typeof LANGUAGES[0]; userId: string; newCode?: string }) => {
+      console.log('CodeEditor: Received code:language-change from user:', data.userId, 'language:', data.language.name)
+      if (data.userId !== user?.id) {
+        setLanguage(data.language)
+        // Update code with new template if provided
+        if (data.newCode) {
+          setCode(data.newCode)
+          if (editorRef.current) {
+            isRemoteUpdateRef.current = true
+            editorRef.current.setValue(data.newCode)
+            setTimeout(() => { isRemoteUpdateRef.current = false }, 100)
+          }
+        }
+      }
+    })
+
+    // Listen for output/execution results from other participants
+    socket.on('code:output', (data: { output: string | null; error: string | null; isRunning: boolean; executionTime: string | null; executionMemory: number | null; userId: string }) => {
+      console.log('CodeEditor: Received code:output from user:', data.userId)
+      if (data.userId !== user?.id) {
+        setShowOutput(true)
+        setIsRunning(data.isRunning)
+        setOutput(data.output)
+        setError(data.error)
+        setExecutionTime(data.executionTime)
+        setExecutionMemory(data.executionMemory)
+      }
+    })
+
     socket.on('interview:init-state', (data: any) => {
       console.log('CodeEditor: Received init state:', data)
       if (data.code) {
@@ -108,6 +144,8 @@ export default function CodeEditor({ interviewId, socket }: CodeEditorProps) {
     return () => {
       socket.off('code:change')
       socket.off('code:cursor')
+      socket.off('code:language-change')
+      socket.off('code:output')
       socket.off('interview:init-state')
       if (debounceTimeoutRef.current) {
         clearTimeout(debounceTimeoutRef.current)
@@ -263,6 +301,23 @@ export default function CodeEditor({ interviewId, socket }: CodeEditorProps) {
     setExecutionTime(null)
     setExecutionMemory(null)
 
+    // Broadcast that execution started to other participants
+    if (socket && user?.id) {
+      socket.emit('code:output', {
+        interviewId,
+        output: null,
+        error: null,
+        isRunning: true,
+        executionTime: null,
+        executionMemory: null,
+      })
+    }
+
+    let finalOutput: string | null = null
+    let finalError: string | null = null
+    let finalTime: string | null = null
+    let finalMemory: number | null = null
+
     try {
       const response = await api.post('/code/execute', {
         sourceCode: code,
@@ -271,30 +326,60 @@ export default function CodeEditor({ interviewId, socket }: CodeEditorProps) {
       })
 
       const result = response.data
+      console.log('Code execution result:', result)
 
-      if (result.status.id === 3) {
+      // Handle successful execution (status 3 = Accepted)
+      if (result.status?.id === 3 || (result.stdout && !result.stderr && !result.compile_output)) {
         // Accepted - successful execution
-        setOutput(result.stdout || '(No output)')
-        setExecutionTime(result.time)
-        setExecutionMemory(result.memory)
-      } else if (result.status.id === 6) {
+        finalOutput = result.stdout || '(No output)'
+        finalTime = result.time
+        finalMemory = result.memory
+        setOutput(finalOutput)
+        setExecutionTime(finalTime)
+        setExecutionMemory(finalMemory)
+      } else if (result.status?.id === 6) {
         // Compilation error
-        setError(`Compilation Error:\n${result.compileOutput || result.message}`)
-      } else if (result.status.id === 11) {
+        finalError = `Compilation Error:\n${result.compileOutput || result.compile_output || result.message}`
+        setError(finalError)
+      } else if (result.status?.id === 11) {
         // Runtime error
-        setError(`Runtime Error:\n${result.stderr || result.message}`)
-      } else if (result.status.id === 5) {
+        finalError = `Runtime Error:\n${result.stderr || result.message}`
+        setError(finalError)
+      } else if (result.status?.id === 5) {
         // Time limit exceeded
-        setError('Time Limit Exceeded')
+        finalError = 'Time Limit Exceeded'
+        setError(finalError)
+      } else if (result.stdout) {
+        // Fallback: if we have stdout, show it
+        finalOutput = result.stdout
+        finalTime = result.time
+        finalMemory = result.memory
+        setOutput(finalOutput)
+        setExecutionTime(finalTime)
+        setExecutionMemory(finalMemory)
       } else {
         // Other error
-        setError(result.stderr || result.compileOutput || result.message || `Error: ${result.status.description}`)
+        finalError = result.stderr || result.compileOutput || result.compile_output || result.message || `Error: ${result.status?.description || 'Unknown error'}`
+        setError(finalError)
       }
     } catch (err: any) {
       console.error('Code execution error:', err)
-      setError(err.response?.data?.message || 'Failed to execute code. Please try again.')
+      finalError = err.response?.data?.message || 'Failed to execute code. Please try again.'
+      setError(finalError)
     } finally {
       setIsRunning(false)
+
+      // Broadcast final output to all participants
+      if (socket && user?.id) {
+        socket.emit('code:output', {
+          interviewId,
+          output: finalOutput,
+          error: finalError,
+          isRunning: false,
+          executionTime: finalTime,
+          executionMemory: finalMemory,
+        })
+      }
     }
   }
 
@@ -306,7 +391,25 @@ export default function CodeEditor({ interviewId, socket }: CodeEditorProps) {
           value={language.id}
           onChange={(e) => {
             const lang = LANGUAGES.find(l => l.id === Number(e.target.value))
-            if (lang) setLanguage(lang)
+            if (lang) {
+              setLanguage(lang)
+
+              // Update code template with correct comment syntax for the new language
+              const newCode = getInitialCode(lang)
+              setCode(newCode)
+              if (editorRef.current) {
+                editorRef.current.setValue(newCode)
+              }
+
+              // Emit language change to other participants with the new code
+              if (socket && user?.id) {
+                socket.emit('code:language-change', {
+                  interviewId,
+                  language: lang,
+                  newCode: newCode,
+                })
+              }
+            }
           }}
           className="px-3 py-1.5 bg-slate-800 border border-slate-600 rounded-md text-sm text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
         >

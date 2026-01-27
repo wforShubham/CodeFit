@@ -25,12 +25,10 @@ interface Judge0Result {
 export class CodeExecutionService {
     private readonly apiUrl: string;
     private readonly apiKey: string;
-    private readonly apiHost: string;
 
     constructor(private configService: ConfigService) {
-        this.apiUrl = this.configService.get('JUDGE0_API_URL') || 'https://judge0-ce.p.rapidapi.com';
+        this.apiUrl = this.configService.get('JUDGE0_API_URL') || 'https://ce.judge0.com';
         this.apiKey = this.configService.get('JUDGE0_API_KEY') || '';
-        this.apiHost = this.configService.get('JUDGE0_API_HOST') || 'judge0-ce.p.rapidapi.com';
     }
 
     async executeCode(dto: ExecuteCodeDto): Promise<any> {
@@ -49,14 +47,20 @@ export class CodeExecutionService {
                 stdin: dto.stdin ? Buffer.from(dto.stdin).toString('base64') : undefined,
             };
 
+            // Build headers - use X-Auth-Token for official Judge0 CE API
+            const headers: Record<string, string> = {
+                'Content-Type': 'application/json',
+            };
+
+            // Add auth token if provided
+            if (this.apiKey) {
+                headers['X-Auth-Token'] = this.apiKey;
+            }
+
             // Submit code for execution
             const createResponse = await fetch(`${this.apiUrl}/submissions?base64_encoded=true&wait=true`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-RapidAPI-Key': this.apiKey,
-                    'X-RapidAPI-Host': this.apiHost,
-                },
+                headers,
                 body: JSON.stringify(submission),
             });
 
