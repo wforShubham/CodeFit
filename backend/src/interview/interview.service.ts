@@ -242,14 +242,8 @@ export class InterviewService {
   async delete(id: string, userId: string) {
     const interview = await this.findOne(id, userId);
 
-    // Verify user is interviewer
-    const user = await this.prisma.user.findUnique({
-      where: { id: userId },
-    });
-
-    if (user.role !== 'INTERVIEWER') {
-      throw new ForbiddenException('Only interviewers can delete interviews');
-    }
+    // Any participant of the interview can delete/cancel it.
+    // The findOne method already verifies that the user is a participant.
 
     await this.prisma.interview.delete({
       where: { id },

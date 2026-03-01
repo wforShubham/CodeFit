@@ -4,12 +4,12 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { useAuthStore } from '@/lib/store'
 import api from '@/lib/api'
-import { Calendar, Users, Video, Plus, UserPlus, Sparkles, Target, TrendingUp, Clock, CheckCircle, Trash2 } from 'lucide-react'
+import { Calendar, Users, Video, Plus, UserPlus, Sparkles, Target, TrendingUp, Clock, CheckCircle, Trash2, ArrowRight } from 'lucide-react'
 import { format } from 'date-fns'
 import { FriendList } from '@/components/friends/FriendList'
+import { Navbar } from '@/components/layout/navbar'
 
 interface Interview {
   id: string
@@ -96,161 +96,142 @@ export default function DashboardPage() {
 
   if (loading) {
     return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="text-center">Loading...</div>
+      <div className="min-h-screen bg-[#09090b] flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center border border-white/10 animate-pulse">
+            <Sparkles className="w-4 h-4 text-white" />
+          </div>
+          <div className="text-sm text-zinc-500 font-mono">Loading dashboard...</div>
+        </div>
       </div>
     )
   }
 
   return (
-    <div className="relative">
-      {/* Animated Background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-indigo-900/10 via-blue-900/5 to-cyan-900/10 -z-10" />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(79,70,229,0.1),transparent_70%)] -z-10" />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_80%,rgba(59,130,246,0.1),transparent_70%)] -z-10" />
-
-      {/* Floating Elements */}
-      <div className="absolute top-20 left-10 w-72 h-72 bg-indigo-500/5 rounded-full blur-3xl animate-pulse -z-10" />
-      <div className="absolute bottom-20 right-10 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl animate-pulse delay-1000 -z-10" />
-
-      {/* Animated Particles */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none -z-10">
-        <div className="absolute top-1/4 left-1/4 w-2 h-2 bg-indigo-400 rounded-full animate-bounce opacity-60 shadow-lg shadow-indigo-400/50" />
-        <div className="absolute top-1/3 right-1/3 w-1 h-1 bg-blue-400 rounded-full animate-bounce opacity-40 shadow-lg shadow-blue-400/50" />
-        <div className="absolute bottom-1/4 left-1/3 w-3 h-3 bg-cyan-400 rounded-full animate-bounce opacity-50 shadow-lg shadow-cyan-400/50" />
-        <div className="absolute top-1/2 right-1/4 w-1.5 h-1.5 bg-violet-400 rounded-full animate-bounce opacity-70 shadow-lg shadow-violet-400/50" />
-
-        {/* Additional particle effects */}
-        <div className="absolute top-1/6 right-1/6 w-1 h-1 bg-purple-400 rounded-full animate-ping opacity-30" style={{ animationDuration: '2s' }} />
-        <div className="absolute bottom-1/3 right-1/6 w-2.5 h-2.5 bg-emerald-400 rounded-full animate-pulse opacity-40" style={{ animationDuration: '4s' }} />
-        <div className="absolute top-2/3 left-1/6 w-1.5 h-1.5 bg-amber-400 rounded-full animate-spin opacity-50" style={{ animationDuration: '6s' }} />
+    <div className="min-h-screen bg-[#09090b] text-zinc-50 font-sans selection:bg-white/10 relative overflow-hidden flex flex-col">
+      {/* Background Effects */}
+      <div className="fixed inset-0 z-0 flex justify-center pointer-events-none">
+        <div className="absolute top-[-20%] right-[-10%] w-[800px] h-[600px] bg-indigo-500/10 blur-[120px] rounded-full mix-blend-screen" />
+        <div className="absolute bottom-[-20%] left-[-10%] w-[800px] h-[600px] bg-blue-500/5 blur-[120px] rounded-full mix-blend-screen" />
       </div>
 
-      {/* Header */}
-      <header className="relative z-10 border-b border-slate-800/50 backdrop-blur-xl bg-slate-950/80">
+      <div className="absolute inset-0 z-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:32px_32px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] pointer-events-none"></div>
+
+      {/* Removed duplicated Navbar pipeline since dashboard/layout.tsx already handles it */}
+
+      <main className="relative z-10 container mx-auto px-6 py-12 flex-1">
         <div className="container mx-auto px-6 py-6">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
             <div>
-              <div className="flex items-center space-x-3 mb-2">
-                <div className="w-12 h-12 bg-gradient-to-br from-indigo-500 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-500/25">
-                  <Target className="w-6 h-6 text-white" />
-                </div>
-                <div>
-                  <h1 className="text-3xl font-bold bg-gradient-to-r from-white via-blue-100 to-indigo-200 bg-clip-text text-transparent">
-                    Dashboard
-                  </h1>
-                  <div className="text-slate-400 text-sm">Welcome back, {user?.firstName}! 👋</div>
-                </div>
-              </div>
-              <p className="text-slate-400 mt-2">Manage your interviews and track your progress</p>
+              <h1 className="text-4xl font-semibold tracking-tight text-white mb-3">
+                Dashboard
+              </h1>
+              <p className="text-zinc-400 text-lg font-light">
+                Welcome back, {user?.firstName}. Here is your interview overview.
+              </p>
             </div>
-            <div className="flex items-center space-x-4">
-              <div className="hidden md:flex items-center space-x-3 bg-slate-800/50 border border-slate-700/50 rounded-xl px-4 py-2 backdrop-blur-sm">
-                <TrendingUp className="w-5 h-5 text-green-400" />
-                <span className="text-sm text-slate-300">All systems operational</span>
-              </div>
-              <div className="flex items-center space-x-3">
-                {user?.role === 'INTERVIEWER' && (
-                  <Link href="/dashboard/create-interview">
-                    <Button className="bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white border-0 shadow-xl shadow-indigo-500/25 rounded-xl px-6 py-3 font-semibold transform hover:scale-105 transition-all duration-200">
-                      <Plus className="w-5 h-5 mr-2" />
-                      New Interview
-                    </Button>
-                  </Link>
-                )}
-                {user?.role === 'JOB_SEEKER' && (
-                  <Link href="/dashboard/friends">
-                    <Button variant="outline" className="border-slate-700 text-slate-300 hover:bg-slate-800 hover:text-white rounded-xl px-6 py-3 backdrop-blur-sm transform hover:scale-105 transition-all duration-200">
-                      <UserPlus className="w-5 h-5 mr-2" />
-                      Find Friends
-                    </Button>
-                  </Link>
-                )}
-              </div>
+
+            <div className="flex items-center gap-4">
+              {user?.role === 'INTERVIEWER' && (
+                <Link href="/dashboard/create-interview">
+                  <Button className="h-11 px-8 bg-white text-black hover:bg-zinc-200 rounded-full font-medium transition-all shadow-[0_0_20px_0px_rgba(255,255,255,0.1)] active:scale-95 text-base">
+                    <Plus className="w-5 h-5 mr-2" />
+                    New Interview
+                  </Button>
+                </Link>
+              )}
+              {user?.role === 'JOB_SEEKER' && (
+                <Link href="/dashboard/friends">
+                  <Button variant="ghost" className="h-11 px-8 bg-white/5 hover:bg-white/10 text-white border border-white/5 rounded-full font-medium transition-all active:scale-95 text-base">
+                    <UserPlus className="w-5 h-5 mr-2" />
+                    Find Friends
+                  </Button>
+                </Link>
+              )}
             </div>
           </div>
-        </div>
-      </header>
 
-      <main className="relative z-10 container mx-auto px-6 py-12">
-        <div className="max-w-7xl mx-auto">
           {/* Stats Overview */}
-          <div className="grid md:grid-cols-4 gap-6 mb-12">
-            <div className="bg-gradient-to-br from-indigo-950/50 to-indigo-900/30 border border-indigo-500/20 rounded-2xl p-6 backdrop-blur-xl hover:border-indigo-500/40 transition-all duration-300 group">
-              <div className="flex items-center justify-between mb-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-500/25 group-hover:scale-110 transition-transform duration-300">
-                  <Video className="w-6 h-6 text-white" />
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-16">
+            <div className="rounded-2xl border border-white/5 bg-white/[0.02] p-8 backdrop-blur-sm group hover:bg-white/[0.04] transition-colors relative overflow-hidden">
+              <div className="absolute top-0 right-0 p-6 opacity-0 group-hover:opacity-20 transition-opacity duration-500 pointer-events-none text-indigo-400">
+                <Video className="w-20 h-20 blur-[20px] translate-x-1/4 -translate-y-1/4" />
+              </div>
+              <div className="flex items-center justify-between mb-6 relative z-10">
+                <div className="w-12 h-12 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center">
+                  <Video className="w-5 h-5 text-indigo-400" />
                 </div>
-                <span className="text-2xl font-bold text-indigo-400 group-hover:text-indigo-300 transition-colors duration-300">
+                <span className="text-3xl font-semibold text-white">
                   {interviews.filter(i => i.status === 'ACTIVE').length}
                 </span>
               </div>
-              <h3 className="text-white font-semibold mb-1">Active Interviews</h3>
-              <p className="text-slate-400 text-sm">Currently in progress</p>
+              <h3 className="text-base font-medium text-zinc-300 relative z-10">Active Interviews</h3>
             </div>
 
-            <div className="bg-gradient-to-br from-blue-950/50 to-blue-900/30 border border-blue-500/20 rounded-2xl p-6 backdrop-blur-xl hover:border-blue-500/40 transition-all duration-300 group">
-              <div className="flex items-center justify-between mb-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/25 group-hover:scale-110 transition-transform duration-300">
-                  <Calendar className="w-6 h-6 text-white" />
+            <div className="rounded-2xl border border-white/5 bg-white/[0.02] p-8 backdrop-blur-sm group hover:bg-white/[0.04] transition-colors relative overflow-hidden">
+              <div className="absolute top-0 right-0 p-6 opacity-0 group-hover:opacity-20 transition-opacity duration-500 pointer-events-none text-blue-400">
+                <Calendar className="w-20 h-20 blur-[20px] translate-x-1/4 -translate-y-1/4" />
+              </div>
+              <div className="flex items-center justify-between mb-6 relative z-10">
+                <div className="w-12 h-12 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center">
+                  <Calendar className="w-5 h-5 text-blue-400" />
                 </div>
-                <span className="text-2xl font-bold text-blue-400 group-hover:text-blue-300 transition-colors duration-300">
+                <span className="text-3xl font-semibold text-white">
                   {interviews.filter(i => i.status === 'SCHEDULED').length}
                 </span>
               </div>
-              <h3 className="text-white font-semibold mb-1">Scheduled</h3>
-              <p className="text-slate-400 text-sm">Upcoming interviews</p>
+              <h3 className="text-base font-medium text-zinc-300 relative z-10">Scheduled</h3>
             </div>
 
-            <div className="bg-gradient-to-br from-green-950/50 to-green-900/30 border border-green-500/20 rounded-2xl p-6 backdrop-blur-xl hover:border-green-500/40 transition-all duration-300 group">
-              <div className="flex items-center justify-between mb-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center shadow-lg shadow-green-500/25 group-hover:scale-110 transition-transform duration-300">
-                  <Clock className="w-6 h-6 text-white" />
+            <div className="rounded-2xl border border-white/5 bg-white/[0.02] p-8 backdrop-blur-sm group hover:bg-white/[0.04] transition-colors relative overflow-hidden">
+              <div className="absolute top-0 right-0 p-6 opacity-0 group-hover:opacity-20 transition-opacity duration-500 pointer-events-none text-emerald-400">
+                <Clock className="w-20 h-20 blur-[20px] translate-x-1/4 -translate-y-1/4" />
+              </div>
+              <div className="flex items-center justify-between mb-6 relative z-10">
+                <div className="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center">
+                  <Clock className="w-5 h-5 text-emerald-400" />
                 </div>
-                <span className="text-2xl font-bold text-green-400 group-hover:text-green-300 transition-colors duration-300">
+                <span className="text-3xl font-semibold text-white">
                   {interviews.length}
                 </span>
               </div>
-              <h3 className="text-white font-semibold mb-1">Total Interviews</h3>
-              <p className="text-slate-400 text-sm">All time interviews</p>
+              <h3 className="text-base font-medium text-zinc-300 relative z-10">Total Interviews</h3>
             </div>
 
-            <div className="bg-gradient-to-br from-purple-950/50 to-purple-900/30 border border-purple-500/20 rounded-2xl p-6 backdrop-blur-xl hover:border-purple-500/40 transition-all duration-300 group">
-              <div className="flex items-center justify-between mb-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg shadow-purple-500/25 group-hover:scale-110 transition-transform duration-300">
-                  <Sparkles className="w-6 h-6 text-white" />
+            <div className="rounded-2xl border border-white/5 bg-white/[0.02] p-8 backdrop-blur-sm group hover:bg-white/[0.04] transition-colors relative overflow-hidden">
+              <div className="absolute top-0 right-0 p-6 opacity-0 group-hover:opacity-20 transition-opacity duration-500 pointer-events-none text-purple-400">
+                <Target className="w-20 h-20 blur-[20px] translate-x-1/4 -translate-y-1/4" />
+              </div>
+              <div className="flex items-center justify-between mb-6 relative z-10">
+                <div className="w-12 h-12 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center">
+                  <Target className="w-5 h-5 text-purple-400" />
                 </div>
-                <span className="text-2xl font-bold text-purple-400 group-hover:text-purple-300 transition-colors duration-300">
+                <span className="text-3xl font-semibold text-white">
                   98%
                 </span>
               </div>
-              <h3 className="text-white font-semibold mb-1">Success Rate</h3>
-              <p className="text-slate-400 text-sm">Interview completions</p>
+              <h3 className="text-base font-medium text-zinc-300 relative z-10">Success Rate</h3>
             </div>
           </div>
 
           <div className="grid lg:grid-cols-3 gap-8">
-            <div className="lg:col-span-2 space-y-8">
-              <div className="flex items-center justify-between">
-                <h2 className="text-2xl font-bold text-white flex items-center">
-                  <Video className="w-6 h-6 mr-3 text-indigo-400" />
-                  Your Interviews
+            <div className="lg:col-span-2 space-y-6">
+
+              <div className="flex items-center justify-between mb-2">
+                <h2 className="text-lg font-medium text-white flex items-center gap-2">
+                  <div className="w-2 h-2 rounded-full bg-indigo-500 animate-pulse" />
+                  Your Upcoming Interviews
                 </h2>
-                {user?.role === 'INTERVIEWER' && interviews.filter(i => i.status !== 'COMPLETED').length > 0 && (
-                  <div className="text-sm text-slate-400">
-                    {interviews.filter(i => i.status !== 'COMPLETED').length} active interview{interviews.filter(i => i.status !== 'COMPLETED').length !== 1 ? 's' : ''}
-                  </div>
-                )}
               </div>
 
               {/* Filter out completed interviews for the main section */}
               {interviews.filter(i => i.status !== 'COMPLETED').length === 0 ? (
-                <div className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 border border-slate-700/50 rounded-2xl p-16 text-center backdrop-blur-xl">
-                  <div className="w-20 h-20 bg-gradient-to-br from-slate-600 to-slate-700 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg shadow-slate-600/25">
-                    <Calendar className="w-10 h-10 text-slate-400" />
+                <div className="rounded-3xl border border-white/5 bg-white/[0.02] p-12 text-center backdrop-blur-sm flex flex-col items-center">
+                  <div className="w-16 h-16 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center mb-6 shadow-inner">
+                    <Calendar className="w-6 h-6 text-zinc-500" />
                   </div>
-                  <h3 className="text-2xl font-bold text-white mb-4">No active interviews</h3>
-                  <p className="text-slate-400 mb-8 max-w-md mx-auto leading-relaxed">
+                  <h3 className="text-xl font-medium text-white mb-3">No active interviews</h3>
+                  <p className="text-zinc-400 mb-8 max-w-sm font-light leading-relaxed">
                     {user?.role === 'INTERVIEWER'
                       ? 'Create a new interview to start connecting with talented developers.'
                       : 'You don\'t have any scheduled interviews yet. Check back later!'
@@ -258,15 +239,15 @@ export default function DashboardPage() {
                   </p>
                   {user?.role === 'INTERVIEWER' && (
                     <Link href="/dashboard/create-interview">
-                      <Button className="bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white border-0 shadow-xl shadow-indigo-500/25 rounded-xl px-8 py-4 text-lg font-semibold transform hover:scale-105 transition-all duration-200">
-                        <Plus className="w-5 h-5 mr-3" />
+                      <Button className="h-10 px-6 rounded-full bg-white text-black hover:bg-zinc-200 font-medium transition-transform active:scale-95">
+                        <Plus className="w-4 h-4 mr-2" />
                         Create a New Interview
                       </Button>
                     </Link>
                   )}
                 </div>
               ) : (
-                <div className="space-y-6">
+                <div className="space-y-4">
                   {interviews.filter(i => i.status !== 'COMPLETED').map((interview, index) => {
                     const otherParticipant = interview.participants.find(
                       (p) => p.candidate?.id !== user?.id && p.interviewer?.id !== user?.id
@@ -274,102 +255,84 @@ export default function DashboardPage() {
                       (p) => p.candidate?.id !== user?.id && p.interviewer?.id !== user?.id
                     )?.interviewer
 
+                    const isInterviewer = user?.role === 'INTERVIEWER';
+
                     return (
                       <div
                         key={interview.id}
-                        className="group bg-gradient-to-br from-slate-800/50 to-slate-900/50 border border-slate-700/50 rounded-2xl p-8 backdrop-blur-xl hover:border-slate-600/50 transition-all duration-500 hover:shadow-2xl hover:shadow-slate-600/10 hover:-translate-y-1"
-                        style={{ animationDelay: `${index * 100}ms` }}
+                        className="group rounded-2xl border border-white/5 bg-white/[0.02] p-6 backdrop-blur-sm hover:bg-white/[0.04] transition-all relative overflow-hidden flex flex-col sm:flex-row sm:items-center justify-between gap-6"
                       >
-                        {/* Animated border */}
-                        <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/10 via-transparent to-blue-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-2xl" />
+                        {/* Animated border pulse for active */}
+                        {interview.status === 'ACTIVE' && (
+                          <div className="absolute inset-x-0 bottom-0 h-[1px] bg-gradient-to-r from-transparent via-green-500 to-transparent opacity-50" />
+                        )}
 
-                        <div className="flex items-start justify-between relative z-10">
-                          <div className="flex-1">
-                            <div className="flex items-center space-x-4 mb-4">
-                              <div className="w-12 h-12 bg-gradient-to-br from-indigo-500 to-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-500/25 group-hover:scale-110 transition-transform duration-300">
-                                <Video className="w-6 h-6 text-white" />
-                              </div>
-                              <div>
-                                <h3 className="text-xl font-bold text-white group-hover:text-indigo-100 transition-colors duration-300 mb-1">
-                                  {interview.title}
-                                </h3>
-                                <span className={`inline-flex items-center px-3 py-1 text-xs font-semibold rounded-full ${interview.status === 'ACTIVE'
-                                  ? 'bg-green-500/20 text-green-400 border border-green-500/30'
-                                  : interview.status === 'SCHEDULED'
-                                    ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30'
-                                    : 'bg-slate-500/20 text-slate-400 border border-slate-500/30'
-                                  }`}>
-                                  {interview.status.toLowerCase()}
-                                </span>
-                              </div>
-                            </div>
-
-                            {interview.description && (
-                              <p className="text-slate-400 leading-relaxed mb-4 group-hover:text-slate-300 transition-colors duration-300">
-                                {interview.description}
-                              </p>
-                            )}
-
-                            <div className="grid md:grid-cols-2 gap-4 text-sm">
-                              {interview.scheduledAt && (
-                                <div className="flex items-center space-x-3 bg-slate-800/50 rounded-lg p-3 border border-slate-700/50">
-                                  <Calendar className="w-5 h-5 text-indigo-400" />
-                                  <div>
-                                    <div className="text-slate-300 font-medium">Scheduled</div>
-                                    <div className="text-slate-400 text-xs">
-                                      {format(new Date(interview.scheduledAt), 'MMM d, yyyy \'at\' h:mm a')}
-                                    </div>
-                                  </div>
-                                </div>
-                              )}
-                              {otherParticipant && (
-                                <div className="flex items-center space-x-3 bg-slate-800/50 rounded-lg p-3 border border-slate-700/50">
-                                  <Users className="w-5 h-5 text-blue-400" />
-                                  <div>
-                                    <div className="text-slate-300 font-medium">Participant</div>
-                                    <div className="text-slate-400 text-xs">
-                                      {otherParticipant.firstName} {otherParticipant.lastName}
-                                    </div>
-                                  </div>
-                                </div>
-                              )}
-                            </div>
+                        <div className="flex-1 relative z-10">
+                          <div className="flex items-center gap-3 mb-2">
+                            <span className={`inline-flex items-center px-2.5 py-1 text-xs font-mono tracking-wider uppercase rounded-md border ${interview.status === 'ACTIVE'
+                              ? 'bg-green-500/10 text-green-400 border-green-500/20'
+                              : interview.status === 'SCHEDULED'
+                                ? 'bg-blue-500/10 text-blue-400 border-blue-500/20'
+                                : 'bg-white/5 text-zinc-400 border-white/10'
+                              }`}>
+                              {interview.status}
+                            </span>
+                            <h3 className="text-xl font-medium text-white">
+                              {interview.title}
+                            </h3>
                           </div>
 
-                          <div className="ml-8">
-                            {(interview.status === 'SCHEDULED' || interview.status === 'ACTIVE') && (
-                              <Button
-                                onClick={() => handleJoinInterview(interview.id)}
-                                className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white border-0 shadow-xl shadow-green-500/25 rounded-xl px-6 py-4 font-semibold w-full transform hover:scale-105 transition-all duration-200 group-hover:shadow-green-500/40"
-                              >
-                                <Video className="w-5 h-5 mr-2" />
-                                Join
-                              </Button>
+                          {interview.description && (
+                            <p className="text-zinc-400 text-base font-light leading-relaxed mb-4 line-clamp-1">
+                              {interview.description}
+                            </p>
+                          )}
+
+                          <div className="flex flex-wrap items-center gap-4 text-sm font-mono text-zinc-500">
+                            {interview.scheduledAt && (
+                              <div className="flex items-center gap-2">
+                                <Calendar className="w-4 h-4" />
+                                {format(new Date(interview.scheduledAt), 'MMM d, h:mm a')}
+                              </div>
                             )}
-
-                            <div className="flex flex-col gap-3 mt-3 w-full">
-                              {interview.status === 'ACTIVE' && (
-                                <Button
-                                  onClick={() => handleCompleteInterview(interview.id)}
-                                  className="bg-slate-700 hover:bg-slate-600 text-white border-0 rounded-xl px-6 py-4 font-semibold w-full transition-all duration-200"
-                                >
-                                  <CheckCircle className="w-5 h-5 mr-2" />
-                                  Mark Completed
-                                </Button>
-                              )}
-
-                              {user?.role === 'INTERVIEWER' && (
-                                <Button
-                                  onClick={() => handleDeleteInterview(interview.id)}
-                                  variant="outline"
-                                  className="border-red-900/50 text-red-400 hover:bg-red-950/50 hover:text-red-300 hover:border-red-800 rounded-xl px-6 py-4 font-semibold w-full transition-all duration-200"
-                                >
-                                  <Trash2 className="w-5 h-5 mr-2" />
-                                  Delete
-                                </Button>
-                              )}
-                            </div>
+                            {otherParticipant && (
+                              <div className="flex items-center gap-2">
+                                <Users className="w-4 h-4" />
+                                {otherParticipant.firstName} {otherParticipant.lastName}
+                              </div>
+                            )}
                           </div>
+                        </div>
+
+                        <div className="flex flex-row sm:flex-col items-center gap-2 relative z-10 sm:w-32">
+                          {(interview.status === 'SCHEDULED' || interview.status === 'ACTIVE') && (
+                            <Button
+                              onClick={() => handleJoinInterview(interview.id)}
+                              className="w-full h-10 bg-white text-black hover:bg-zinc-200 rounded-lg text-base font-medium transition-transform active:scale-95"
+                            >
+                              Join
+                            </Button>
+                          )}
+
+                          {interview.status === 'ACTIVE' && (
+                            <Button
+                              onClick={() => handleCompleteInterview(interview.id)}
+                              variant="ghost"
+                              className="w-full h-9 bg-white/5 hover:bg-green-500/10 text-green-400 hover:text-green-300 border border-white/5 rounded-lg text-sm font-medium"
+                            >
+                              <CheckCircle className="w-4 h-4 mr-2" />
+                              Done
+                            </Button>
+                          )}
+
+                          <Button
+                            onClick={() => handleDeleteInterview(interview.id)}
+                            variant="ghost"
+                            className="w-full h-9 bg-transparent hover:bg-red-500/10 text-zinc-500 hover:text-red-400 rounded-lg text-sm transition-colors"
+                          >
+                            <Trash2 className="w-4 h-4 mr-2" />
+                            Delete
+                          </Button>
                         </div>
                       </div>
                     )
@@ -379,13 +342,12 @@ export default function DashboardPage() {
 
               {/* Completed Interviews Section */}
               {interviews.filter(i => i.status === 'COMPLETED').length > 0 && (
-                <div className="mt-12 space-y-6">
-                  <h2 className="text-2xl font-bold text-white flex items-center">
-                    <CheckCircle className="w-6 h-6 mr-3 text-green-400" />
-                    Completed Interviews
+                <div className="pt-8">
+                  <h2 className="text-base font-medium text-zinc-400 mb-4 flex items-center tracking-wide uppercase">
+                    Past Interviews
                   </h2>
-                  <div className="grid gap-6">
-                    {interviews.filter(i => i.status === 'COMPLETED').map((interview, index) => {
+                  <div className="space-y-3">
+                    {interviews.filter(i => i.status === 'COMPLETED').map((interview) => {
                       const otherParticipant = interview.participants.find(
                         (p) => p.candidate?.id !== user?.id && p.interviewer?.id !== user?.id
                       )?.candidate || interview.participants.find(
@@ -395,35 +357,33 @@ export default function DashboardPage() {
                       return (
                         <div
                           key={interview.id}
-                          className="group bg-gradient-to-br from-slate-900/50 to-slate-950/50 border border-slate-800/50 rounded-xl p-6 backdrop-blur-sm hover:border-slate-700/50 transition-all duration-300"
+                          className="flex items-center justify-between p-4 rounded-xl border border-white/5 bg-white/[0.01] hover:bg-white/[0.02] transition-colors"
                         >
-                          <div className="flex items-center justify-between">
-                            <div className="flex-1">
-                              <h3 className="text-lg font-bold text-slate-300 group-hover:text-white transition-colors">
+                          <div className="flex items-center gap-4">
+                            <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center border border-white/10">
+                              <CheckCircle className="w-4 h-4 text-zinc-500" />
+                            </div>
+                            <div>
+                              <h3 className="text-base font-medium text-zinc-300">
                                 {interview.title}
                               </h3>
-                              <p className="text-slate-500 text-sm mb-3">
+                              <p className="text-sm text-zinc-500 font-mono mt-1 flex items-center gap-2">
                                 {format(new Date(interview.updatedAt || interview.createdAt), 'MMM d, yyyy')}
+                                {otherParticipant && (
+                                  <>
+                                    <span>•</span>
+                                    <span>{otherParticipant.firstName} {otherParticipant.lastName}</span>
+                                  </>
+                                )}
                               </p>
-                              {otherParticipant && (
-                                <div className="text-sm text-slate-400 flex items-center gap-2">
-                                  <Users className="w-4 h-4" />
-                                  with {otherParticipant.firstName} {otherParticipant.lastName}
-                                </div>
-                              )}
                             </div>
-
-                            {user?.role === 'INTERVIEWER' && (
-                              <Button
-                                onClick={() => handleDeleteInterview(interview.id)}
-                                variant="ghost"
-                                size="sm"
-                                className="text-slate-500 hover:text-red-400 hover:bg-red-950/30"
-                              >
-                                <Trash2 className="w-4 h-4" />
-                              </Button>
-                            )}
                           </div>
+                          <button
+                            onClick={() => handleDeleteInterview(interview.id)}
+                            className="p-2 text-zinc-600 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors"
+                          >
+                            <Trash2 className="w-5 h-5" />
+                          </button>
                         </div>
                       )
                     })}
@@ -432,72 +392,90 @@ export default function DashboardPage() {
               )}
             </div>
 
-            {user?.role === 'INTERVIEWER' && (
-              <div className="space-y-8">
-                {/* Quick Actions for Interviewer */}
-                <div className="bg-gradient-to-br from-indigo-950/50 to-indigo-900/30 border border-indigo-500/20 rounded-2xl p-8 backdrop-blur-xl">
-                  <h3 className="text-xl font-bold text-white mb-6 flex items-center">
-                    <Target className="w-6 h-6 mr-3 text-indigo-400" />
+            {/* Sidebar Columns */}
+            <div className="space-y-6">
+              {user?.role === 'INTERVIEWER' && (
+                <div className="rounded-2xl border border-white/5 bg-white/[0.02] p-6 backdrop-blur-sm">
+                  <h3 className="text-sm font-medium text-zinc-400 mb-4 tracking-wide uppercase">
                     Quick Actions
                   </h3>
-                  <div className="space-y-4">
-                    <Link href="/dashboard/create-interview">
-                      <div className="flex items-center space-x-3 p-4 bg-slate-800/50 border border-slate-700/50 rounded-xl hover:bg-slate-800/70 hover:border-slate-600/50 transition-all duration-300 cursor-pointer group">
-                        <Plus className="w-5 h-5 text-indigo-400 group-hover:scale-110 transition-transform duration-200" />
-                        <span className="text-slate-300 group-hover:text-white transition-colors duration-200">Create New Interview</span>
+                  <div className="space-y-3">
+                    <Link href="/dashboard/create-interview" className="block">
+                      <div className="flex items-center justify-between p-4 rounded-xl border border-white/5 bg-white/5 hover:bg-white/10 transition-colors group">
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 rounded-lg bg-indigo-500/20 text-indigo-400 flex items-center justify-center">
+                            <Plus className="w-4 h-4" />
+                          </div>
+                          <span className="text-sm font-medium text-zinc-300 group-hover:text-white transition-colors">Start Interview</span>
+                        </div>
+                        <ArrowRight className="w-4 h-4 text-zinc-500 group-hover:text-white group-hover:translate-x-1 transition-all" />
                       </div>
                     </Link>
-                    <Link href="/welcome">
-                      <div className="flex items-center space-x-3 p-4 bg-slate-800/50 border border-slate-700/50 rounded-xl hover:bg-slate-800/70 hover:border-slate-600/50 transition-all duration-300 cursor-pointer group">
-                        <Sparkles className="w-5 h-5 text-indigo-400 group-hover:scale-110 transition-transform duration-200" />
-                        <span className="text-slate-300 group-hover:text-white transition-colors duration-200">View Dashboard Home</span>
+                    <Link href="/welcome" className="block">
+                      <div className="flex items-center justify-between p-4 rounded-xl border border-white/5 bg-white/5 hover:bg-white/10 transition-colors group">
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 rounded-lg bg-zinc-800 text-zinc-400 flex items-center justify-center">
+                            <Sparkles className="w-4 h-4" />
+                          </div>
+                          <span className="text-sm font-medium text-zinc-300 group-hover:text-white transition-colors">Go to Home</span>
+                        </div>
+                        <ArrowRight className="w-4 h-4 text-zinc-500 group-hover:text-white group-hover:translate-x-1 transition-all" />
                       </div>
                     </Link>
                   </div>
                 </div>
-              </div>
-            )}
+              )}
 
-            {user?.role === 'JOB_SEEKER' && (
-              <div className="space-y-8">
-                <div className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 border border-slate-700/50 rounded-2xl p-8 backdrop-blur-xl">
-                  <div className="flex items-center justify-between mb-6">
-                    <h3 className="text-xl font-bold text-white flex items-center">
-                      <Users className="w-6 h-6 mr-3 text-blue-400" />
-                      Friends
-                    </h3>
-                    <Link href="/dashboard/friends">
-                      <Button variant="outline" size="sm" className="border-slate-700 text-slate-400 hover:bg-slate-800 hover:text-white rounded-lg">
+              {user?.role === 'JOB_SEEKER' && (
+                <>
+                  <div className="rounded-2xl border border-white/5 bg-white/[0.02] p-6 backdrop-blur-sm">
+                    <div className="flex items-center justify-between mb-4">
+                      <h3 className="text-sm font-medium text-zinc-400 tracking-wide uppercase">
+                        Friends
+                      </h3>
+                      <Link href="/dashboard/friends" className="text-xs text-indigo-400 hover:text-indigo-300 font-medium">
                         Manage
-                      </Button>
-                    </Link>
+                      </Link>
+                    </div>
+                    {/* The FriendList component might need styling updates separately, 
+                        but wrapping it here sets context */}
+                    <div className="-mx-2">
+                      <FriendList />
+                    </div>
                   </div>
-                  <FriendList />
-                </div>
 
-                {/* Quick Actions */}
-                <div className="bg-gradient-to-br from-purple-950/50 to-purple-900/30 border border-purple-500/20 rounded-2xl p-8 backdrop-blur-xl">
-                  <h3 className="text-xl font-bold text-white mb-6 flex items-center">
-                    <Target className="w-6 h-6 mr-3 text-purple-400" />
-                    Quick Actions
-                  </h3>
-                  <div className="space-y-4">
-                    <Link href="/dashboard/friends">
-                      <div className="flex items-center space-x-3 p-4 bg-slate-800/50 border border-slate-700/50 rounded-xl hover:bg-slate-800/70 hover:border-slate-600/50 transition-all duration-300 cursor-pointer group">
-                        <UserPlus className="w-5 h-5 text-purple-400 group-hover:scale-110 transition-transform duration-200" />
-                        <span className="text-slate-300 group-hover:text-white transition-colors duration-200">Find New Friends</span>
-                      </div>
-                    </Link>
-                    <Link href="/welcome">
-                      <div className="flex items-center space-x-3 p-4 bg-slate-800/50 border border-slate-700/50 rounded-xl hover:bg-slate-800/70 hover:border-slate-600/50 transition-all duration-300 cursor-pointer group">
-                        <Sparkles className="w-5 h-5 text-purple-400 group-hover:scale-110 transition-transform duration-200" />
-                        <span className="text-slate-300 group-hover:text-white transition-colors duration-200">View Dashboard Home</span>
-                      </div>
-                    </Link>
+                  <div className="rounded-2xl border border-white/5 bg-white/[0.02] p-6 backdrop-blur-sm">
+                    <h3 className="text-sm font-medium text-zinc-400 mb-4 tracking-wide uppercase">
+                      Quick Actions
+                    </h3>
+                    <div className="space-y-3">
+                      <Link href="/dashboard/friends" className="block">
+                        <div className="flex items-center justify-between p-4 rounded-xl border border-white/5 bg-white/5 hover:bg-white/10 transition-colors group">
+                          <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 rounded-lg bg-pink-500/20 text-pink-400 flex items-center justify-center">
+                              <UserPlus className="w-4 h-4" />
+                            </div>
+                            <span className="text-sm font-medium text-zinc-300 group-hover:text-white transition-colors">Find Friends</span>
+                          </div>
+                          <ArrowRight className="w-4 h-4 text-zinc-500 group-hover:text-white group-hover:translate-x-1 transition-all" />
+                        </div>
+                      </Link>
+                      <Link href="/welcome" className="block">
+                        <div className="flex items-center justify-between p-4 rounded-xl border border-white/5 bg-white/5 hover:bg-white/10 transition-colors group">
+                          <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 rounded-lg bg-zinc-800 text-zinc-400 flex items-center justify-center">
+                              <Sparkles className="w-4 h-4" />
+                            </div>
+                            <span className="text-sm font-medium text-zinc-300 group-hover:text-white transition-colors">Go to Home</span>
+                          </div>
+                          <ArrowRight className="w-4 h-4 text-zinc-500 group-hover:text-white group-hover:translate-x-1 transition-all" />
+                        </div>
+                      </Link>
+                    </div>
                   </div>
-                </div>
-              </div>
-            )}
+                </>
+              )}
+            </div>
           </div>
         </div>
       </main>

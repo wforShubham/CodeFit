@@ -4,7 +4,6 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent } from '@/components/ui/card'
 import { useAuthStore } from '@/lib/store'
 import { Navbar } from '@/components/layout/navbar'
 import {
@@ -12,9 +11,7 @@ import {
   Code,
   PenTool,
   Users,
-  Zap,
   Calendar,
-  Settings,
   BarChart3,
   ArrowRight,
   Sparkles,
@@ -23,7 +20,7 @@ import {
   Briefcase,
   Target,
   Trophy,
-  Star
+  Zap
 } from 'lucide-react'
 
 export default function WelcomePage() {
@@ -48,36 +45,32 @@ export default function WelcomePage() {
       description: 'Begin a new technical interview session',
       icon: Video,
       href: '/dashboard/create-interview',
-      color: 'from-blue-500 to-cyan-500',
-      bgColor: 'from-blue-950/50 to-cyan-950/30',
-      shadowColor: 'shadow-blue-500/25'
+      color: 'text-indigo-400',
+      bgColor: 'bg-indigo-500/10'
     }] : []),
     {
       title: 'Join Interview',
       description: 'Enter an existing interview room',
       icon: Play,
       href: '/dashboard',
-      color: 'from-green-500 to-emerald-500',
-      bgColor: 'from-green-950/50 to-emerald-950/30',
-      shadowColor: 'shadow-green-500/25'
+      color: 'text-emerald-400',
+      bgColor: 'bg-emerald-500/10'
     },
     {
       title: 'My Interviews',
       description: 'View your scheduled interviews',
       icon: Calendar,
       href: '/dashboard',
-      color: 'from-purple-500 to-pink-500',
-      bgColor: 'from-purple-950/50 to-pink-950/30',
-      shadowColor: 'shadow-purple-500/25'
+      color: 'text-blue-400',
+      bgColor: 'bg-blue-500/10'
     },
     {
       title: 'Find Partners',
       description: 'Connect with other developers',
       icon: UserPlus,
       href: '/dashboard/friends',
-      color: 'from-orange-500 to-red-500',
-      bgColor: 'from-orange-950/50 to-red-950/30',
-      shadowColor: 'shadow-orange-500/25'
+      color: 'text-pink-400',
+      bgColor: 'bg-pink-500/10'
     }
   ]
 
@@ -109,149 +102,135 @@ export default function WelcomePage() {
   ]
 
   return (
-    <div className="relative">
-      {/* Animated Background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-blue-900/10 via-purple-900/5 to-cyan-900/10 -z-10" />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(56,189,248,0.1),transparent_70%)] -z-10" />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_80%,rgba(139,92,246,0.1),transparent_70%)] -z-10" />
-
-      {/* Floating Elements */}
-      <div className="absolute top-20 left-10 w-72 h-72 bg-blue-500/5 rounded-full blur-3xl animate-pulse -z-10" />
-      <div className="absolute bottom-20 right-10 w-96 h-96 bg-purple-500/5 rounded-full blur-3xl animate-pulse delay-1000 -z-10" />
-
-      {/* Animated Particles */}
-      <div className="absolute inset-0 overflow-hidden -z-10">
-        <div className="absolute top-1/4 left-1/4 w-2 h-2 bg-blue-400 rounded-full animate-bounce opacity-60 shadow-lg shadow-blue-400/50" />
-        <div className="absolute top-1/3 right-1/3 w-1 h-1 bg-purple-400 rounded-full animate-bounce opacity-40 shadow-lg shadow-purple-400/50" />
-        <div className="absolute bottom-1/4 left-1/3 w-3 h-3 bg-cyan-400 rounded-full animate-bounce opacity-50 shadow-lg shadow-cyan-400/50" />
-        <div className="absolute top-1/2 right-1/4 w-1.5 h-1.5 bg-pink-400 rounded-full animate-bounce opacity-70 shadow-lg shadow-pink-400/50" />
+    <div className="min-h-screen bg-[#09090b] text-zinc-50 font-sans selection:bg-white/10 relative overflow-hidden flex flex-col">
+      {/* Subtle Background Effects */}
+      <div className="fixed inset-0 z-0 flex justify-center pointer-events-none">
+        <div className="absolute top-[-20%] w-[1000px] h-[600px] bg-indigo-500/10 blur-[120px] rounded-full" />
+        <div className="absolute top-[20%] w-[800px] h-[800px] bg-blue-500/5 blur-[120px] rounded-full mix-blend-screen" />
       </div>
 
-      {/* Header */}
-      <Navbar />
+      <div className="absolute inset-0 z-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:32px_32px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] pointer-events-none"></div>
 
-      <main className="relative z-10 container mx-auto px-6 py-12">
-        <div className="max-w-7xl mx-auto">
+      {/* Header */}
+      <div className="relative z-20">
+        <Navbar />
+      </div>
+
+      <main className="relative z-10 container mx-auto px-6 py-12 flex-1">
+        <div className="max-w-6xl mx-auto">
           {/* Welcome Hero */}
-          <div className="text-center mb-16">
-            <div className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-500/10 to-purple-500/10 border border-blue-500/20 rounded-full mb-8 backdrop-blur-sm">
-              <Star className="w-5 h-5 text-yellow-400 mr-3 animate-pulse" />
-              <span className="text-slate-300 font-medium">Welcome to your CodeFit dashboard!</span>
-              <Sparkles className="w-5 h-5 text-blue-400 ml-3 animate-bounce" />
+          <div className="mb-20 pt-10 text-center">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur text-sm font-medium text-zinc-300 mb-6">
+              <Sparkles className="w-4 h-4 text-indigo-400" />
+              Welcome to your CodeFit dashboard
             </div>
 
-            <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">
-              <span className="bg-gradient-to-r from-white via-blue-100 to-purple-200 bg-clip-text text-transparent">
-                Ready to Interview?
-              </span>
+            <h1 className="text-5xl md:text-7xl font-semibold tracking-tight leading-[1.1] text-transparent bg-clip-text bg-gradient-to-b from-white to-white/60 mb-6">
+              {user?.role === 'JOB_SEEKER' ? 'Ready for an interview?' : 'Ready to Interview?'}
             </h1>
 
-            <p className="text-xl text-slate-400 mb-12 max-w-3xl mx-auto leading-relaxed">
+            <p className="text-xl text-zinc-400 max-w-2xl mx-auto leading-relaxed font-light">
               Choose your next action and dive into the world of collaborative technical interviews.
               Everything you need is just one click away.
             </p>
           </div>
 
           {/* Quick Actions Grid */}
-          <div className="flex flex-wrap justify-center gap-6 mb-20">
+          <div className="flex flex-wrap justify-center gap-4 mb-24 max-w-5xl mx-auto">
             {quickActions.map((action, index) => (
-              <Link key={action.title} href={action.href} className="w-full sm:w-[calc(50%-12px)] lg:w-[calc(25%-18px)] min-w-[240px] max-w-[300px]">
-                <Card className={`group relative bg-gradient-to-br ${action.bgColor} border-slate-700/50 backdrop-blur-xl hover:border-slate-600/50 transition-all duration-500 hover:shadow-2xl ${action.shadowColor} hover:shadow-2xl hover:-translate-y-2 overflow-hidden cursor-pointer h-full`}>
-                  {/* Animated border */}
-                  <div className={`absolute inset-0 bg-gradient-to-r ${action.color.replace('500', '500/20')} opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-lg`} />
+              <Link key={action.title} href={action.href} className="group block w-full sm:w-[calc(50%-8px)] lg:w-[calc(25%-12px)] min-w-[240px] max-w-[320px]">
+                <div className="h-full rounded-2xl border border-white/5 bg-white/[0.02] p-6 hover:bg-white/[0.04] transition-all hover:-translate-y-1 relative overflow-hidden backdrop-blur-sm">
+                  {/* Hover glow */}
+                  <div className={`absolute top-0 right-0 p-8 opacity-0 group-hover:opacity-20 transition-opacity duration-500 pointer-events-none ${action.color}`}>
+                    <action.icon className="w-24 h-24 blur-[30px] translate-x-1/4 -translate-y-1/4" />
+                  </div>
 
-                  {/* Floating particles */}
-                  <div className="absolute top-4 right-4 w-2 h-2 bg-white/20 rounded-full opacity-0 group-hover:opacity-60 animate-ping" style={{ animationDuration: '2s' }} />
-                  <div className="absolute bottom-4 left-4 w-1 h-1 bg-white/20 rounded-full opacity-0 group-hover:opacity-40 animate-ping" style={{ animationDuration: '3s', animationDelay: '1s' }} />
+                  <div className={`w-12 h-12 rounded-xl border border-white/10 flex items-center justify-center mb-5 ${action.bgColor}`}>
+                    <action.icon className={`w-5 h-5 ${action.color}`} />
+                  </div>
+                  <h3 className="text-lg font-medium text-zinc-100 mb-2 relative z-10">{action.title}</h3>
+                  <p className="text-zinc-400 text-sm leading-relaxed font-light mb-8 relative z-10">{action.description}</p>
 
-                  <CardContent className="p-6 relative z-10 flex flex-col items-center text-center h-full">
-                    <div className={`w-16 h-16 bg-gradient-to-br ${action.color} rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 shadow-lg ${action.shadowColor}`}>
-                      <action.icon className="w-8 h-8 text-white" />
-                    </div>
-                    <h3 className="text-lg font-semibold text-white mb-2 group-hover:text-white transition-colors duration-300">{action.title}</h3>
-                    <p className="text-slate-400 text-sm leading-relaxed mb-4 group-hover:text-slate-300 transition-colors duration-300">{action.description}</p>
-                    <div className="mt-auto flex items-center text-blue-400 text-sm font-medium group-hover:text-blue-300 transition-colors duration-300">
-                      <span>Get started</span>
-                      <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform duration-300" />
-                    </div>
-                  </CardContent>
-                </Card>
+                  <div className="absolute bottom-6 left-6 flex items-center text-sm font-medium text-zinc-300 group-hover:text-white transition-colors">
+                    <span>Open</span>
+                    <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                  </div>
+                </div>
               </Link>
             ))}
           </div>
 
           {/* Stats Overview */}
-          <div className="bg-gradient-to-r from-slate-800/50 to-slate-900/50 border border-slate-700/50 rounded-2xl p-8 backdrop-blur-xl mb-16">
-            <h2 className="text-2xl font-bold text-white mb-6 text-center">Your Interview Journey</h2>
-            <div className="grid md:grid-cols-4 gap-6">
+          <div className="rounded-3xl border border-white/5 bg-white/[0.02] p-10 backdrop-blur-sm mb-24 relative overflow-hidden">
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-indigo-500/5 blur-[100px] rounded-full pointer-events-none" />
+            <h2 className="text-2xl font-medium text-white mb-10 text-center relative z-10">Your Interview Journey</h2>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 relative z-10">
               <div className="text-center">
-                <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center mx-auto mb-3">
-                  <Briefcase className="w-6 h-6 text-white" />
+                <div className="w-12 h-12 rounded-xl border border-white/10 bg-white/5 flex items-center justify-center mx-auto mb-4">
+                  <Briefcase className="w-5 h-5 text-indigo-400" />
                 </div>
-                <div className="text-2xl font-bold text-white">12</div>
-                <div className="text-sm text-slate-400">Interviews Completed</div>
+                <div className="text-3xl font-medium text-white mb-1">12</div>
+                <div className="text-sm text-zinc-500 font-light">Completed</div>
               </div>
               <div className="text-center">
-                <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-500 rounded-xl flex items-center justify-center mx-auto mb-3">
-                  <Trophy className="w-6 h-6 text-white" />
+                <div className="w-12 h-12 rounded-xl border border-white/10 bg-white/5 flex items-center justify-center mx-auto mb-4">
+                  <Trophy className="w-5 h-5 text-emerald-400" />
                 </div>
-                <div className="text-2xl font-bold text-white">8</div>
-                <div className="text-sm text-slate-400">Successful Hires</div>
+                <div className="text-3xl font-medium text-white mb-1">8</div>
+                <div className="text-sm text-zinc-500 font-light">Successful Hires</div>
               </div>
               <div className="text-center">
-                <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center mx-auto mb-3">
-                  <Target className="w-6 h-6 text-white" />
+                <div className="w-12 h-12 rounded-xl border border-white/10 bg-white/5 flex items-center justify-center mx-auto mb-4">
+                  <Target className="w-5 h-5 text-blue-400" />
                 </div>
-                <div className="text-2xl font-bold text-white">95%</div>
-                <div className="text-sm text-slate-400">Success Rate</div>
+                <div className="text-3xl font-medium text-white mb-1">95%</div>
+                <div className="text-sm text-zinc-500 font-light">Success Rate</div>
               </div>
               <div className="text-center">
-                <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-red-500 rounded-xl flex items-center justify-center mx-auto mb-3">
-                  <Users className="w-6 h-6 text-white" />
+                <div className="w-12 h-12 rounded-xl border border-white/10 bg-white/5 flex items-center justify-center mx-auto mb-4">
+                  <Users className="w-5 h-5 text-pink-400" />
                 </div>
-                <div className="text-2xl font-bold text-white">24</div>
-                <div className="text-sm text-slate-400">Active Connections</div>
+                <div className="text-3xl font-medium text-white mb-1">24</div>
+                <div className="text-sm text-zinc-500 font-light">Connections</div>
               </div>
             </div>
           </div>
 
           {/* Feature Showcase */}
-          <div className="mb-16">
-            <h2 className="text-2xl font-bold text-white mb-8 text-center">Why Choose CodeFit?</h2>
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="mb-24">
+            <h2 className="text-2xl font-medium text-white mb-8 text-center">Why Choose CodeFit?</h2>
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
               {features.map((feature, index) => (
-                <div key={feature.title} className="bg-slate-800/30 border border-slate-700/50 rounded-xl p-6 backdrop-blur-sm hover:bg-slate-800/50 transition-all duration-300 group">
-                  <div className="w-12 h-12 bg-slate-700/50 rounded-lg flex items-center justify-center mb-4 group-hover:bg-slate-600/50 transition-colors duration-300">
-                    <feature.icon className="w-6 h-6 text-slate-300 group-hover:text-white transition-colors duration-300" />
+                <div key={feature.title} className="rounded-2xl border border-white/5 bg-white/[0.01] p-6 hover:bg-white/[0.03] transition-colors">
+                  <div className="w-10 h-10 rounded-lg border border-white/10 bg-white/5 flex items-center justify-center mb-4">
+                    <feature.icon className="w-4 h-4 text-zinc-300" />
                   </div>
-                  <h3 className="text-lg font-semibold text-white mb-2">{feature.title}</h3>
-                  <p className="text-slate-400 text-sm mb-3">{feature.description}</p>
-                  <div className="text-xs text-slate-500 font-medium">{feature.stats}</div>
+                  <h3 className="text-base font-medium text-zinc-100 mb-2">{feature.title}</h3>
+                  <p className="text-zinc-400 text-sm mb-4 font-light leading-relaxed">{feature.description}</p>
+                  <div className="text-xs text-zinc-500 font-mono">{feature.stats}</div>
                 </div>
               ))}
             </div>
           </div>
 
           {/* CTA Section */}
-          <div className="text-center bg-gradient-to-r from-slate-800/50 to-slate-900/50 border border-slate-700/50 rounded-2xl p-12 backdrop-blur-xl">
-            <h2 className="text-3xl font-bold text-white mb-4">
-              Ready to Start Your Next Interview?
+          <div className="text-center py-16 border-t border-white/5">
+            <h2 className="text-3xl font-medium text-white mb-4">
+              Code Your Next Opportunity
             </h2>
-            <p className="text-slate-400 mb-8 max-w-2xl mx-auto">
+            <p className="text-zinc-400 mb-8 max-w-2xl mx-auto font-light">
               Join thousands of developers who trust CodeFit for their most important technical interviews.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               {user?.role === 'INTERVIEWER' && (
                 <Link href="/dashboard/create-interview">
-                  <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white border-0 shadow-xl shadow-blue-500/25 rounded-xl px-8 py-4 text-lg font-semibold transform hover:scale-105 transition-all duration-200">
-                    <Zap className="w-5 h-5 mr-2" />
+                  <Button className="h-11 px-6 rounded-full bg-white text-black hover:bg-zinc-200 font-medium text-base transition-transform active:scale-95 shadow-[0_0_20px_4px_rgba(255,255,255,0.1)]">
                     Create New Interview
                   </Button>
                 </Link>
               )}
               <Link href="/dashboard">
-                <Button variant="outline" className="border-slate-700 text-slate-300 hover:bg-slate-800 hover:text-white rounded-xl px-8 py-4 text-lg backdrop-blur-sm">
-                  <BarChart3 className="w-5 h-5 mr-2" />
+                <Button variant="ghost" className="h-11 px-6 rounded-full bg-white/5 hover:bg-white/10 text-white border border-white/5 font-medium text-base transition-transform active:scale-95">
                   View Dashboard
                 </Button>
               </Link>
